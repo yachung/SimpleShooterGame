@@ -72,7 +72,7 @@ public class PlayerMove : MonoBehaviour
             //targetPosition.x = Mathf.Clamp(targetPosition.x, clampX.Min, clampX.Max);
             targetPosition.x = clampX.Clamp(targetPosition.x);
             //targetPosition.y = Mathf.Clamp(targetPosition.y, clampY.Min, clampY.Max);
-            targetPosition.y = clampX.Clamp(targetPosition.y);
+            targetPosition.y = clampY.Clamp(targetPosition.y);
 
             // 3차원으로 변환을 거친 위치를 플레이어의 위치로 설정.
             refTransform.position = Vector3.Lerp(refTransform.position, targetPosition, Time.deltaTime * lagSpeed);
