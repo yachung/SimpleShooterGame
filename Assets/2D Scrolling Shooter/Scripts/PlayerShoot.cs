@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 // 플레이어의 발사를 제어하는 스크립트
 public class PlayerShoot : MonoBehaviour
@@ -9,18 +10,16 @@ public class PlayerShoot : MonoBehaviour
     [SerializeField] private float shootInterval = 0.2f;
 
     [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private Transform muzzle;
 
-    // 애니메이션 제어
-    private Animator refAnimator;
+    // 탄약을 발사할 때 발생시킬 이벤트 (타입: 유니티 이벤트)
+    public UnityEvent OnShoot;
 
     // 초 계산 변수 (누적 시간 계산)
     private float elapsedTime = 0f;
 
     private void Awake()
     {
-        // 애니메이션 컴포넌트 초기화
-        refAnimator = GetComponent<Animator>();
-
         // 자동으로 반복 실행 되도록 예약
         //InvokeRepeating("Shoot", 0f, shootInterval);
     }
@@ -39,13 +38,16 @@ public class PlayerShoot : MonoBehaviour
     // 발사 함수
     private void Shoot()
     {
+        // 탄약 발사 이벤트 발행
+        OnShoot?.Invoke();
+
         // 애니메이션 트리거 설정.
-        refAnimator.SetTrigger("Shoot");
+        //refAnimator.SetTrigger("Shoot");
 
         // 탄약 발사.
         if (bulletPrefab != null)
         {
-            Instantiate(bulletPrefab, transform.position, transform.rotation);
+            Instantiate(bulletPrefab, muzzle.position, Quaternion.identity);
         }
         else
         {
