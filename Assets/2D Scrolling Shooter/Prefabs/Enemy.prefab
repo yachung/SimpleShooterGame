@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 6845739170173012222}
   - component: {fileID: 6458601063569471178}
   - component: {fileID: 7260020511969478254}
+  - component: {fileID: 472345351638966134}
+  - component: {fileID: 2006712887001656318}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -195,13 +197,40 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerBulletTag: PlayerBullet
-  hp: 50
+  hp: 400
   OnDamaged:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7260020511969478254}
         m_TargetAssemblyTypeName: EnemyEffector, Assembly-CSharp
         m_MethodName: PlayDamageEffect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnDead:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 472345351638966134}
+        m_TargetAssemblyTypeName: ExplosionEffector, Assembly-CSharp
+        m_MethodName: PlayerExplosionEffect
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: SoundPlayer, Assembly-CSharp
+        m_MethodName: PlayExplosionSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -224,3 +253,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animationDuration: 0.1
+--- !u!114 &472345351638966134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1813674313354584812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e943174e8db2d31419c77d78207c2a11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ExplosionPrefab: {fileID: 4948787415951934669, guid: 98787d90d85efc44980869c1d1e382a3, type: 3}
+--- !u!114 &2006712887001656318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1813674313354584812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55fbaf79859623e46a2de5dcaf95c9ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shootInterval: 1.5
+  bulletSpeed: 3
+  bulletPrefab: {fileID: 874652320059718333, guid: 3af3929c9c7fb90478290a6dc0fdf278, type: 3}

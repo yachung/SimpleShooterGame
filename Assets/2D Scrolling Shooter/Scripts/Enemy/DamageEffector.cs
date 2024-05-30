@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class EnemyEffector : MonoBehaviour
+public class DamageEffector : MonoBehaviour
 {
     // 필드
     // 색상을 깜박이는 애니메이션을 재생하는 시간(단위: 초)
