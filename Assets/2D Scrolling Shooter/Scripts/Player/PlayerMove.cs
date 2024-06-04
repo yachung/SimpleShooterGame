@@ -1,84 +1,100 @@
-ï»¿using System;
 using UnityEngine;
 
-// ë§ˆìš°ìŠ¤ ë“œë˜ê·¸(ëª¨ë°”ì¼ - í„°ì¹˜)ë¥¼ ì‚¬ìš©í•´ì„œ í”Œë ˆì´ì–´ë¥¼ ì´ë™ì‹œí‚¤ëŠ” ìŠ¤í¬ë¦½íŠ¸.
+// ¸¶¿ì½º µå·¡±×(¸ğ¹ÙÀÏ-ÅÍÄ¡)¸¦ »ç¿ëÇØ¼­ ÇÃ·¹ÀÌ¾î¸¦ ÀÌµ¿½ÃÅ°´Â ½ºÅ©¸³Æ®.
 public class PlayerMove : MonoBehaviour
 {
-    // ìµœì†Œ/ìµœëŒ€ ë²”ìœ„ë¥¼ ì§€ì •í•  ë•Œ ì‚¬ìš©í•  í´ë˜ìŠ¤ ì •ì˜.
-
-    // ìš°ë¦¬ê°€ ì„ ì–¸í•œ í´ë˜ìŠ¤ëŠ” ìœ ë‹ˆí‹°ê°€ ëª¨ë¦„
-    // ì´ í´ë˜ìŠ¤ë¥¼ ì¸ìŠ¤í™í„°ì— ë…¸ì¶œí•˜ë ¤ë©´, ëª…ì‹œì ìœ¼ë¡œ ì•„ë˜ íƒœê·¸ë¥¼ ì¶”ê°€í•´ì•¼í•¨
-    [Serializable]
+    // ÃÖ¼Ò/ÃÖ´ë ¹üÀ§¸¦ ÁöÁ¤ÇÒ ¶§ »ç¿ëÇÒ Å¬·¡½º Á¤ÀÇ.
+    // ¿ì¸®°¡ ¼±¾ğÇÑ Å¬·¡½º´Â À¯´ÏÆ¼°¡ ¸ğ¸§.
+    // ÀÌ Å¬·¡½º¸¦ ÀÎ½ºÆåÅÍ¿¡ ³ëÃâÇÏ·Á¸é, ¸í½ÃÀûÀ¸·Î ¾Æ·¡ ÅÂ±×¸¦ Ãß°¡ÇØ¾ßÇÔ.
+    [System.Serializable]
     class ClampValue
     {
+        // ¹üÀ§¸¦ ÁöÁ¤ÇÒ ¶§ »ç¿ëÇÒ ÃÖ¼Ò°ª.
         [SerializeField] private float min;
+
+        // ¹üÀ§¸¦ ÁöÁ¤ÇÒ ¶§ »ç¿ëÇÒ ÃÖ´ë°ª.
         [SerializeField] private float max;
 
         public float Min { get { return min; } }
         public float Max { get { return max; } }
 
-        // ì „ë‹¬ ë°›ì€ ê°’ì„ minê³¼ maxì‚¬ì´ì˜ ê°’ìœ¼ë¡œ ê³ ì •í•´ì£¼ëŠ” í•¨ìˆ˜
+        // Àü´Ş ¹ŞÀº °ªÀ» min°ú max »çÀÌÀÇ °ªÀ¸·Î °íÁ¤ÇØÁÖ´Â ÇÔ¼ö.
         public float Clamp(float target)
         {
             return Mathf.Clamp(target, min, max);
         }
     }
 
+    // ÇÃ·¹ÀÌ¾î°¡ ÀÌµ¿ÇÒ ¶§ Àû¿ëÇÒ µô·¹ÀÌ ¼Óµµ °ª.
     [SerializeField] private float lagSpeed = 5f;
 
-    // x ìœ„ì¹˜ì— ì‚¬ìš©í•  ë²”ìœ„ ë³€ìˆ˜
+    // x À§Ä¡¿¡ »ç¿ëÇÒ ¹üÀ§ º¯¼ö.
     [SerializeField] private ClampValue clampX;
 
-    // y ìœ„ì¹˜ì— ì‚¬ìš©í•  ë²”ìœ„ ë³€ìˆ˜
+    // y À§Ä¡¿¡ »ç¿ëÇÒ ¹üÀ§ º¯¼ö.
     [SerializeField] private ClampValue clampY;
 
-    // ì¹´ë©”ë¼ë¥¼ ì €ì¥í•  ì°¸ì¡° ë³€ìˆ˜
+    // Ä«¸Ş¶ó¸¦ ÀúÀåÇÒ ÂüÁ¶ º¯¼ö.
     private Camera mainCamera;
 
-    // í”Œë ˆì´ì–´ì™€ ë“œë˜ê·¸ ìœ„ì¹˜ì˜ ì˜¤í”„ì…‹ ê°’
+    // ÇÃ·¹ÀÌ¾î¿Í µå·¡±× À§Ä¡ÀÇ ¿ÀÇÁ¼Â °ª.
     private Vector3 offset;
 
-    // íŠ¸ëœìŠ¤í¼ ì°¸ì¡° ë³€ìˆ˜
+    // Æ®·£½ºÆû ÂüÁ¶ º¯¼ö.
     private Transform refTransform;
 
     private void Awake()
     {
-        // ë©”ì¸ ì¹´ë©”ë¼ë¥¼ ë³€ìˆ˜ì— ì €ì¥.
+        // ¸ŞÀÎ Ä«¸Ş¶ó¸¦ º¯¼ö¿¡ ÀúÀå.
         mainCamera = Camera.main;
 
+        // Æ®·£½ºÆû ÀúÀå.
         refTransform = transform;
     }
 
     private void Update()
     {
+        // ¸¶¿ì½º Å¬¸¯À» ½ÃÀÛÇÒ ¶§ ¸¶¿ì½º Å¬¸¯ À§Ä¡¿Í ÇÃ·¹ÀÌ¾îÀÇ À§Ä¡¸¦ ¿ÀÇÁ¼ÂÀ¸·Î °è»ê.
         if (Input.GetMouseButtonDown(0))
         {
-            // ë§ˆìš°ìŠ¤ ìœ„ì¹˜ë¥¼ 3ì°¨ì› ì›”ë“œ ì¢Œí‘œë¡œ ë³€í™˜
-            Vector3 clickPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            // ¸¶¿ì½º À§Ä¡¸¦ 3Â÷¿ø ¿ùµå ÁÂÇ¥·Î º¯È¯.
+            Vector3 clickPosition
+                = mainCamera.ScreenToWorldPoint(Input.mousePosition);
             clickPosition.z = refTransform.position.z;
 
+            // ¿ÀÇÁ¼Â °è»ê ÈÄ ÀúÀå.
             offset = refTransform.position - clickPosition;
         }
-        // ë§ˆìš°ìŠ¤ í´ë¦­ ì‹œ ë°˜ë³µ
+
+        // ¸¶¿ì½º Å¬¸¯ ½Ã ¹İº¹.
         if (Input.GetMouseButton(0))
         {
-            // ë§ˆìš°ìŠ¤ ìœ„ì¹˜ë¥¼ 3ì°¨ì› ì›”ë“œ ì¢Œí‘œë¡œ ë³€í™˜
-            Vector3 clickPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            // ¸¶¿ì½º À§Ä¡¸¦ 3Â÷¿ø ¿ùµå ÁÂÇ¥·Î º¯È¯.
+            Vector3 clickPosition
+                = mainCamera.ScreenToWorldPoint(Input.mousePosition);
             clickPosition.z = refTransform.position.z;
 
-            // ì˜¤í”„ì…‹ì„ ë³´ì •í•´ ì´ë™í•´ì•¼í•  ìµœì¢… ìœ„ì¹˜ë¥¼ ì €ì¥
+            // ¿ÀÇÁ¼ÂÀ» º¸Á¤ÇØ ÀÌµ¿ÇØ¾ßÇÒ ÃÖÁ¾ À§Ä¡¸¦ ÀÏ´Ü ÀúÀå.
             Vector3 targetPosition = clickPosition + offset;
 
+            // x ÃàÀÇ À§Ä¡¸¦ È­¸éÀ» ¹ş¾î³ªÁö ¾Êµµ·Ï ¼³Á¤.
             //targetPosition.x = Mathf.Clamp(targetPosition.x, clampX.Min, clampX.Max);
             targetPosition.x = clampX.Clamp(targetPosition.x);
+
+            // yÃàÀÇ À§Ä¡¸¦ Á¶Á¤.
             //targetPosition.y = Mathf.Clamp(targetPosition.y, clampY.Min, clampY.Max);
             targetPosition.y = clampY.Clamp(targetPosition.y);
 
-            // 3ì°¨ì›ìœ¼ë¡œ ë³€í™˜ì„ ê±°ì¹œ ìœ„ì¹˜ë¥¼ í”Œë ˆì´ì–´ì˜ ìœ„ì¹˜ë¡œ ì„¤ì •.
-            refTransform.position = Vector3.Lerp(refTransform.position, targetPosition, Time.deltaTime * lagSpeed);
+            // 3Â÷¿øÀ¸·Î º¯È¯À» °ÅÄ£ À§Ä¡¸¦ ÇÃ·¹ÀÌ¾îÀÇ À§Ä¡·Î ¼³Á¤.
+            //refTransform.position = clickPosition + offset;
+            refTransform.position = Vector3.Lerp(
+                refTransform.position,
+                targetPosition,
+                Time.deltaTime * lagSpeed
+            );
         }
 
-        // í´ë¦­ í•´ì œ ì‹œ ê°’ ì •ë¦¬
+        // Å¬¸¯ ÇØÁ¦ ½Ã °ª Á¤¸®.
         if (Input.GetMouseButtonUp(0))
         {
             offset = Vector3.zero;

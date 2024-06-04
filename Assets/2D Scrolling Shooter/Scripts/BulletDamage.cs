@@ -1,13 +1,12 @@
-using System;
-using UnityEngine;
+ï»¿using UnityEngine;
 
-// Åº¾àÀÇ µ¥¹ÌÁö Á¤º¸¸¦ °ü¸®ÇÒ ´ë¹ÌÁö ½ºÅ©¸³Æ®
+// íƒ„ì•½ì˜ ëŒ€ë¯¸ì§€ ì •ë³´ë¥¼ ê´€ë¦¬í•  ëŒ€ë¯¸ì§€ ìŠ¤í¬ë¦½íŠ¸.
 public class BulletDamage : MonoBehaviour
 {
-    // µ¥¹ÌÁö
+    // ëŒ€ë¯¸ì§€.
     [SerializeField] private float damage = 10f;
 
-    // Getter
+    // Getter.
     public float Damage
     {
         get

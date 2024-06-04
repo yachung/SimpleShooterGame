@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,11 +11,14 @@ public class EnemyTrigger : MonoBehaviour
     // 체력 (Health Power).
     [SerializeField] private float hp = 50f;
 
+    // 스코어
+    [SerializeField] private int score = 100;
+
     // 대미지 이벤트.
     public UnityEvent OnDamaged;
 
-    // 죽음 이벤트
-    public UnityEvent<Vector3> OnDead; 
+    // 죽음 이벤트.
+    public UnityEvent<Vector3> OnDead;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -37,6 +41,17 @@ public class EnemyTrigger : MonoBehaviour
             {
                 // 죽음 이벤트 발행.
                 OnDead?.Invoke(transform.position);
+
+                // 점수 획득 처리
+                // 1. 점수관리자 검색
+                //var scoreManager = FindFirstObjectByType<ScoreManager>();
+                // 2. 점수 관리자에 점수 획득 정보 전달
+                //scoreManager.AddScore(score);
+
+                // 싱글톤 관리자에게 바로 점수 획득 전달
+                ScoreManager.Get().AddScore(score);
+
+                // 삭제.
                 Destroy(gameObject);
             }
         }
