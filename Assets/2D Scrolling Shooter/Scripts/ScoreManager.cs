@@ -1,4 +1,4 @@
-﻿using TMPro;
+using TMPro;
 using UnityEngine;
 
 // 점수 관리자 - 컴포넌트로 관리할 스크립트.
@@ -47,6 +47,11 @@ public class ScoreManager : MonoBehaviour
 
         score.SetTextUI(scoreText, bestScoreText);
         score.Initialize();
+    }
+
+    public void SaveScore()
+    {
+        score.Save();
     }
 
     public void AddScore(int gainScore)

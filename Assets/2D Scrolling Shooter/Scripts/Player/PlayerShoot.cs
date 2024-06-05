@@ -1,29 +1,29 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-// ÇÃ·¹ÀÌ¾îÀÇ ¹ß»ç¸¦ Á¦¾îÇÏ´Â ½ºÅ©¸³Æ®.
+// í”Œë ˆì´ì–´ì˜ ë°œì‚¬ë¥¼ ì œì–´í•˜ëŠ” ìŠ¤í¬ë¦½íŠ¸.
 public class PlayerShoot : MonoBehaviour
 {
-    // Åº¾à ¹ß»ç - °ÔÀÓ ·ÎÁ÷.
-    // ÀÚµ¿À¸·Î ¹ß»çµÇµµ·Ï ±â´ÉÀ» ±¸Çö.
-    // Åº¾àÀÌ ¹ß»çµÇ´Â °£°İ.
+    // íƒ„ì•½ ë°œì‚¬ - ê²Œì„ ë¡œì§.
+    // ìë™ìœ¼ë¡œ ë°œì‚¬ë˜ë„ë¡ ê¸°ëŠ¥ì„ êµ¬í˜„.
+    // íƒ„ì•½ì´ ë°œì‚¬ë˜ëŠ” ê°„ê²©.
     [SerializeField] private float shootInterval = 0.2f;
     
-    // ÇÃ·¹ÀÌ¾î Åº¾à ÇÁ¸®ÆÕ.
+    // í”Œë ˆì´ì–´ íƒ„ì•½ í”„ë¦¬íŒ¹.
     [SerializeField] private GameObject bulletPrefab;
 
-    // Åº¾à ¹ß»ç À§Ä¡ Æ®·£½ºÆû.
+    // íƒ„ì•½ ë°œì‚¬ ìœ„ì¹˜ íŠ¸ëœìŠ¤í¼.
     [SerializeField] private Transform firePosition;
 
-    // Åº¾àÀ» ¹ß»çÇÒ ¶§ ¹ß»ı½ÃÅ³ ÀÌº¥Æ® (Å¸ÀÔ: À¯´ÏÆ¼ ÀÌº¥Æ®).
+    // íƒ„ì•½ì„ ë°œì‚¬í•  ë•Œ ë°œìƒì‹œí‚¬ ì´ë²¤íŠ¸ (íƒ€ì…: ìœ ë‹ˆí‹° ì´ë²¤íŠ¸).
     public UnityEvent OnShoot;
 
-    // ÃÊ °è»ê º¯¼ö (´©Àû ½Ã°£ °è»ê).
+    // ì´ˆ ê³„ì‚° ë³€ìˆ˜ (ëˆ„ì  ì‹œê°„ ê³„ì‚°).
     private float elapsedTime = 0f;
 
     private void Awake()
     {
-        // ÀÚµ¿À¸·Î ¹İº¹ ½ÇÇàµÇµµ·Ï ¿¹¾à.
+        // ìë™ìœ¼ë¡œ ë°˜ë³µ ì‹¤í–‰ë˜ë„ë¡ ì˜ˆì•½.
         //InvokeRepeating("Shoot", 0f, shootIntervale);
 
         //CancelInvoke("Shoot");
@@ -31,24 +31,28 @@ public class PlayerShoot : MonoBehaviour
 
     private void Update()
     {
-        // Å¸ÀÌ¸Ó ¾÷µ¥ÀÌÆ®.
+        // ê²Œì„ì´ ì‹œì‘ë˜ì§€ ì•Šì•˜ìœ¼ë©´ ë°”ë¡œ ë¦¬í„´
+        if (!GameManager.Instance.IsGameStarted)
+            return;
+
+        // íƒ€ì´ë¨¸ ì—…ë°ì´íŠ¸.
         elapsedTime += Time.deltaTime;
         
-        // Å¸ÀÌ¸Ó°¡ ¹ß»ç °£°İ ½Ã°£¸¸Å­ Áö³µÀ¸¸é,
+        // íƒ€ì´ë¨¸ê°€ ë°œì‚¬ ê°„ê²© ì‹œê°„ë§Œí¼ ì§€ë‚¬ìœ¼ë©´,
         if (elapsedTime > shootInterval)
         {
-            // ¹ß»çÇÏ°í,
+            // ë°œì‚¬í•˜ê³ ,
             Shoot();
 
-            // Å¸ÀÌ¸Ó ÃÊ±âÈ­.
+            // íƒ€ì´ë¨¸ ì´ˆê¸°í™”.
             elapsedTime = 0f;
         }
     }
 
-    // ¹ß»ç ÇÔ¼ö.
+    // ë°œì‚¬ í•¨ìˆ˜.
     private void Shoot()
     {
-        // Åº¾à ¹ß»ç ÀÌº¥Æ® ¹ßÇà.
+        // íƒ„ì•½ ë°œì‚¬ ì´ë²¤íŠ¸ ë°œí–‰.
         OnShoot?.Invoke();
 
         //if (OnShoot != null)
@@ -56,14 +60,14 @@ public class PlayerShoot : MonoBehaviour
         //    OnShoot.Invoke();
         //}
 
-        // Åº¾à ¹ß»ç.
+        // íƒ„ì•½ ë°œì‚¬.
         if (bulletPrefab != null)
         {
             Instantiate(bulletPrefab, firePosition.position, Quaternion.identity);
         }
         else
         {
-            Debug.Log("<color=red> bulletPrefab º¯¼ö°¡ ¼³Á¤µÇÁö ¾Ê¾Ò½À´Ï´Ù. </color>");
+            Debug.Log("<color=red> bulletPrefab ë³€ìˆ˜ê°€ ì„¤ì •ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤. </color>");
         }
     }
 }

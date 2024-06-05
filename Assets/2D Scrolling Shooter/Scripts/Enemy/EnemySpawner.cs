@@ -1,17 +1,17 @@
 using System;
 using UnityEngine;
 
-// Àû Ä³¸¯ÅÍ ±×·ìÀ» ÁöÁ¤ÇÑ ½Ã°£ °£°İ¸¶´Ù »ı¼ºÇÏ´Â Àû ½ºÆ÷ÅÍ ½ºÅ©¸³Æ®.
+// ì  ìºë¦­í„° ê·¸ë£¹ì„ ì§€ì •í•œ ì‹œê°„ ê°„ê²©ë§ˆë‹¤ ìƒì„±í•˜ëŠ” ì  ìŠ¤í¬í„° ìŠ¤í¬ë¦½íŠ¸.
 public class EnemySpawner : MonoBehaviour
 {
-    // Àû Ä³¸¯ÅÍ ½ºÆù(½ÇÇà Áß¿¡ »ı¼º) Á¤º¸.
+    // ì  ìºë¦­í„° ìŠ¤í°(ì‹¤í–‰ ì¤‘ì— ìƒì„±) ì •ë³´.
     [Serializable]
     public class EnemySpawnInfo
     {
-        // »ı¼ºÇÒ Àû Ä³¸¯ÅÍ ±×·ì ÇÁ¸®ÆÕ.
+        // ìƒì„±í•  ì  ìºë¦­í„° ê·¸ë£¹ í”„ë¦¬íŒ¹.
         [SerializeField] private GameObject prefab;
 
-        // »ı¼ºÇÏ±â±îÁö ´ë±âÇÒ »ı¼º ½Ã°£(´ÜÀ§: ÃÊ).
+        // ìƒì„±í•˜ê¸°ê¹Œì§€ ëŒ€ê¸°í•  ìƒì„± ì‹œê°„(ë‹¨ìœ„: ì´ˆ).
         [SerializeField] private float spawnTime;
 
         // Getter.
@@ -19,27 +19,32 @@ public class EnemySpawner : MonoBehaviour
         public float SpwanTime { get { return spawnTime; } }
     }
 
-    // Àû Ä³¸¯ÅÍ ½ºÆù Á¤º¸ ¹è¿­ ¼±¾ğ.
+    // ì  ìºë¦­í„° ìŠ¤í° ì •ë³´ ë°°ì—´ ì„ ì–¸.
     [SerializeField] private EnemySpawnInfo[] spawnInfo;
 
-    // Àû »ı¼º ½Ã »ç¿ëÇÒ ¹è¿­ ÀÎµ¦½º.
+    // ì  ìƒì„± ì‹œ ì‚¬ìš©í•  ë°°ì—´ ì¸ë±ìŠ¤.
     private int currentIndex = 0;
 
-    private void Awake()
+    //private void Awake()
+    //{
+    //    Invoke("Spawn", spawnInfo[currentIndex].SpwanTime);
+    //}
+
+    public void OnGameStarted()
     {
         Invoke("Spawn", spawnInfo[currentIndex].SpwanTime);
     }
 
-    // ½ÇÁ¦·Î Àû ±×·ìÀ» »ı¼ºÇÏ´Â ÇÔ¼ö.
+    // ì‹¤ì œë¡œ ì  ê·¸ë£¹ì„ ìƒì„±í•˜ëŠ” í•¨ìˆ˜.
     private void Spawn()
     {
-        // ÇÁ¸®ÆÕÀ» ¾À¿¡ »ı¼º.
+        // í”„ë¦¬íŒ¹ì„ ì”¬ì— ìƒì„±.
         Instantiate(spawnInfo[currentIndex].Prefab, transform.position, Quaternion.identity);
 
-        // ¹è¿­ ÀÎµ¦½º ¾÷µ¥ÀÌÆ®.
+        // ë°°ì—´ ì¸ë±ìŠ¤ ì—…ë°ì´íŠ¸.
         currentIndex = (currentIndex + 1) % spawnInfo.Length;
 
-        // ´ÙÀ½ Spawn ÇÔ¼ö È£Ãâ ´ë±â.
+        // ë‹¤ìŒ Spawn í•¨ìˆ˜ í˜¸ì¶œ ëŒ€ê¸°.
         Invoke("Spawn", spawnInfo[currentIndex].SpwanTime);
     }
 }

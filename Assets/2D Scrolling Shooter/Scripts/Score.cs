@@ -2,38 +2,38 @@ using System.IO;
 using TMPro;
 using UnityEngine;
 
-// ÇÃ·¹ÀÌ¾îÀÇ Á¡¼ö¸¦ ÀúÀåÇÏ´Âµ¥ »ç¿ëÇÒ µ¥ÀÌÅÍ Å¬·¡½º
-// [System.Serializable]À» ºÙ¿©¾ß ÀÎ½ºÆåÅÍ¿¡¼­ ÇÊ¿äÇÒ ¶§ ³ëÃâÀÌ °¡´É
+// í”Œë ˆì´ì–´ì˜ ì ìˆ˜ë¥¼ ì €ì¥í•˜ëŠ”ë° ì‚¬ìš©í•  ë°ì´í„° í´ë˜ìŠ¤
+// [System.Serializable]ì„ ë¶™ì—¬ì•¼ ì¸ìŠ¤í™í„°ì—ì„œ í•„ìš”í•  ë•Œ ë…¸ì¶œì´ ê°€ëŠ¥
 
 [System.Serializable]
 public class Score
 {
-    // ÇÃ·¹ÀÌ¾îÀÇ ÇöÀç Á¡¼ö
-    private int score = 0;
+    // í”Œë ˆì´ì–´ì˜ í˜„ì¬ ì ìˆ˜
+    [SerializeField] public int score { get; private set; } = 0;
 
-    // ÇÃ·¹ÀÌ¾îÀÇ ÃÖ°í Á¡¼ö(±â·Ï)
-    [SerializeField] private int bestScore = 0;
+    // í”Œë ˆì´ì–´ì˜ ìµœê³  ì ìˆ˜(ê¸°ë¡)
+    [SerializeField] public int bestScore = 0;
 
     //public string jsonString;
 
-    // ÅØ½ºÆ® UI ÂüÁ¶ º¯¼ö
+    // í…ìŠ¤íŠ¸ UI ì°¸ì¡° ë³€ìˆ˜
     private TextMeshProUGUI scoreText;
     private TextMeshProUGUI bestScoreText;
 
-    // °ø°³ ¸Ş¼Òµå - ÃÊ±âÈ­ ÇÔ¼ö
+    // ê³µê°œ ë©”ì†Œë“œ - ì´ˆê¸°í™” í•¨ìˆ˜
     public void Initialize()
     {
-        // ÃÖ°í Á¡¼ö ·Îµå
+        // ìµœê³  ì ìˆ˜ ë¡œë“œ
         //bestScore = PlayerPrefs.GetInt("BestScore");
 
-        // ¿ªÁ÷·ÄÈ­
-        // 1. ÆÄÀÏÀ» ºÒ·¯¿Í ¹®ÀÚ¿­·Î ÀĞ¾î¿À±â
+        // ì—­ì§ë ¬í™”
+        // 1. íŒŒì¼ì„ ë¶ˆëŸ¬ì™€ ë¬¸ìì—´ë¡œ ì½ì–´ì˜¤ê¸°
         string jsonString = File.ReadAllText($"{Application.dataPath}/Score.txt");
 
-        // 2. ºÒ·¯¿Â ¹®ÀÚ¿­ °ªÀ» °´Ã¼·Î º¹¿ø (¿ªÁ÷·ÄÈ­)
+        // 2. ë¶ˆëŸ¬ì˜¨ ë¬¸ìì—´ ê°’ì„ ê°ì²´ë¡œ ë³µì› (ì—­ì§ë ¬í™”)
         bestScore = JsonUtility.FromJson<Score>(jsonString).bestScore;
 
-        // UI ¾÷µ¥ÀÌÆ®
+        // UI ì—…ë°ì´íŠ¸
         if (scoreText != null)
             scoreText.text = $"Score: {score}";
 
@@ -47,36 +47,37 @@ public class Score
         this.bestScoreText = bestScoreText;
     }
 
-    // Á¡¼ö È¹µæ ÇÔ¼ö
+    // ì ìˆ˜ íšë“ í•¨ìˆ˜
     public void Add(int gainScore)
     {
-        // Á¡¼ö ´©Àû.
+        // ì ìˆ˜ ëˆ„ì .
         score += gainScore;
 
         if (scoreText != null)
             scoreText.text = $"Score: {score}";
 
-        // ÃÖ°í Á¡¼ö È®ÀÎ ÈÄ¿¡ ³Ñ¾úÀ¸¸é ÃÖ°í Á¡¼öµµ ¾÷µ¥ÀÌÆ®
+        // ìµœê³  ì ìˆ˜ í™•ì¸ í›„ì— ë„˜ì—ˆìœ¼ë©´ ìµœê³  ì ìˆ˜ë„ ì—…ë°ì´íŠ¸
         if (score > bestScore)
         {
             bestScore = score;
 
-            // ÃÖ°í Á¡¼ö¸¦ ÆÄÀÏ¿¡ ±â·Ï.
+            // ìµœê³  ì ìˆ˜ë¥¼ íŒŒì¼ì— ê¸°ë¡.
             PlayerPrefs.SetInt("BestScore", bestScore);
-
-            // JSONÀ¸·Î ±â·Ï
-            // 1. ÀúÀåÇÒ °´Ã¼¸¦ JSON¹®ÀÚ¿­·Î »ı¼º (º¯È¯)
-            var jsonString = JsonUtility.ToJson(this);
-            
-            // 2. º¯È¯ÇÑ JSON ¹®ÀÚ¿­À» ÆÄÀÏ·Î ÀúÀå
-            // 2-1. ÆÄÀÏ·Î ÀúÀåÇÏ·Á¸é °æ·Î(ÀúÀåÇÏ·Á´Â À§Ä¡)¿Í ÆÄÀÏ ÀÌ¸§, È®ÀåÀÚ¸¦ ÁöÁ¤ÇØ¾ß ÇÔ.
-            File.WriteAllText($"{Application.dataPath}/Score.txt", jsonString);
 
             if (bestScoreText != null)
                 bestScoreText.text = $"BestScore: {bestScore}";
         }
-
     }
 
+    // ì ìˆ˜ë¥¼ íŒŒì¼ë¡œ ì €ì¥í•˜ëŠ” í•¨ìˆ˜
+    public void Save()
+    {
+        // JSONìœ¼ë¡œ ê¸°ë¡
+        // 1. ì €ì¥í•  ê°ì²´ë¥¼ JSONë¬¸ìì—´ë¡œ ìƒì„± (ë³€í™˜)
+        var jsonString = JsonUtility.ToJson(this);
 
+        // 2. ë³€í™˜í•œ JSON ë¬¸ìì—´ì„ íŒŒì¼ë¡œ ì €ì¥
+        // 2-1. íŒŒì¼ë¡œ ì €ì¥í•˜ë ¤ë©´ ê²½ë¡œ(ì €ì¥í•˜ë ¤ëŠ” ìœ„ì¹˜)ì™€ íŒŒì¼ ì´ë¦„, í™•ì¥ìë¥¼ ì§€ì •í•´ì•¼ í•¨.
+        File.WriteAllText($"{Application.dataPath}/Score.txt", jsonString);
+    }
 }
